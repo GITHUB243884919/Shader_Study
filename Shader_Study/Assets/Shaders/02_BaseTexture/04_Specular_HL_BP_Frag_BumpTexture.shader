@@ -67,42 +67,40 @@ Shader "Custom/Base_Texture/Specular_HL_BP_Frag_BumpTexture"
 				o.uv.zw = v.uv.xy * _BumpTex_ST.xy + _BumpTex_ST.zw;
 				//tangent
 				TANGENT_SPACE_ROTATION;
-				o.lightDir = mul(_World2Object, _WorldSpaceLightPos0).xyz;
-				o.lightDir = mul(rotation, o.lightDir).xyz;
-				o.viewDir  = mul(rotation, ObjSpaceViewDir(v.vertex)).xyz;
+				//o.lightDir = mul(_World2Object, _WorldSpaceLightPos0).xyz;
+				//o.lightDir = mul(rotation, o.lightDir).xyz;
+				o.lightDir = mul(rotation, ObjSpaceLightDir(v.vertex)).xyz;
+                o.viewDir  = mul(rotation, ObjSpaceViewDir(v.vertex)).xyz;
 				return o;
 			}
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-				fixed3 tangentLightDir = normalize(i.lightDir);
-				fixed3 tangentViewDir = normalize(i.viewDir);
-				
-				// Get the texel in the normal map
-				fixed4 packedNormal = tex2D(_BumpTex, i.uv.zw);
-				fixed3 tangentNormal;
-				// If the texture is not marked as "Normal map"
-//				tangentNormal.xy = (packedNormal.xy * 2 - 1) * _BumpScale;
-//				tangentNormal.z = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));
-				
-				// Or mark the texture as "Normal map", and use the built-in funciton
-				tangentNormal = UnpackNormal(packedNormal);
-				tangentNormal.xy *= _BumpScale;
-				tangentNormal.z = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));
-				
-				fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb;
-				
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
-				
-				fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(tangentNormal, tangentLightDir));
+				fixed3 albedo = tex2D(_MainTex, i.uv) * _Color.rgb; 
+				//fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
 
-				fixed3 halfDir = normalize(tangentLightDir + tangentViewDir);
-				fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(tangentNormal, halfDir)), _Gloss);
+				//tangent
+				fixed3 tangentLightDir = normalize(i.lightDir);
+				fixed3 tangentViewDir  = normalize(i.viewDir);
+				fixed4 packedNoraml    = tex2D(_BumpTex, i.uv.zw);
+				fixed3 tangentNormal   = UnpackNormal(packedNoraml);
+				//tangentNormal.xy     *= _BumpScale;
+				//tangentNormal.z       = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));
+
+				//diffuse
+				fixed  halfLamb = dot(tangentNormal, tangentLightDir) * 0.5 + 0.5;
+				fixed3 diffuse = _LightColor0.rgb  * _Diffuse.rgb * halfLamb;
 				
-				return fixed4(ambient + diffuse + specular, 1.0);
+				//specular
+				fixed3 halfDir = normalize(tangentLightDir + tangentViewDir);
+				fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(tangentNormal, halfDir)), _Gloss);
+				
+				fixed3 color = (ambient + diffuse) * albedo + specular;
+				return fixed4(color, 1);
 			}
 			ENDCG
 		}
 	}
-	FallBack "Specular"
+	//FallBack "Specular"
 }
