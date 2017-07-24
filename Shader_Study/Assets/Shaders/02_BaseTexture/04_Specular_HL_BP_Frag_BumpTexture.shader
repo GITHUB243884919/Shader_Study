@@ -8,7 +8,7 @@ Shader "Custom/Base_Texture/Specular_HL_BP_Frag_BumpTexture"
 		_Color("Color", Color) = (1, 1, 1, 1)
 		_MainTex("Main Texture", 2D) = "white" {}
 		_BumpTex("Bump Texture", 2D) = "bump" {}
-		_BumpScale ("Bump Scale", Float) = 1.0
+		_BumpScale("Bump Scale", Float) = 1.0
 
 		_Diffuse("Diffuse", Color) = (1, 1, 1, 1)
 		_Specular("Specular", Color) = (1, 1, 1, 1)
@@ -51,7 +51,7 @@ Shader "Custom/Base_Texture/Specular_HL_BP_Frag_BumpTexture"
 			sampler2D _BumpTex;
 			fixed4    _BumpTex_ST;
 			fixed4    _Color;
-			fixed4    _BumpScale;
+			fixed    _BumpScale;
 			fixed4    _Diffuse;
 			fixed4    _Specular;
 			float     _Gloss;
@@ -85,9 +85,8 @@ Shader "Custom/Base_Texture/Specular_HL_BP_Frag_BumpTexture"
 				fixed3 tangentViewDir  = normalize(i.viewDir);
 				fixed4 packedNoraml    = tex2D(_BumpTex, i.uv.zw);
 				fixed3 tangentNormal   = UnpackNormal(packedNoraml);
-				//tangentNormal.xy     *= _BumpScale;
-				//tangentNormal.z       = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));
-
+				tangentNormal.xy     *= _BumpScale;
+				tangentNormal.z       = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));
 				//diffuse
 				fixed  halfLamb = dot(tangentNormal, tangentLightDir) * 0.5 + 0.5;
 				fixed3 diffuse = _LightColor0.rgb  * _Diffuse.rgb * halfLamb;
