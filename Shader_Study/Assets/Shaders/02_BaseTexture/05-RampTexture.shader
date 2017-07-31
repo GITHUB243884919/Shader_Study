@@ -57,8 +57,8 @@
 				
 				// Use the texture to sample the diffuse color
 				fixed halfLambert  = dot(worldNormal, worldLightDir) * 0.5 + 0.5;
-				//fixed3 diffuseColor = tex2D(_RampTex, fixed2(halfLambert, halfLambert)).rgb * _Color.rgb;
-				fixed3 diffuseColor = tex2D(_RampTex, i.uv).rgb * _Color.rgb;
+				fixed3 diffuseColor = tex2D(_RampTex, fixed2(halfLambert, halfLambert)).rgb * _Color.rgb;
+				//fixed3 diffuseColor = tex2D(_RampTex, i.uv).rgb * _Color.rgb;
 
 				fixed3 diffuse = _LightColor0.rgb * diffuseColor * halfLambert;
 				
