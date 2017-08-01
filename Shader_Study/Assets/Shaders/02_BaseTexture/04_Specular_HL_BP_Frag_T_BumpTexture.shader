@@ -1,7 +1,9 @@
-﻿//Blinn-Phong模型
+﻿//凹凸贴图
+//切线空间
+//高光用Blinn-Phong模型
 //漫反射用半兰伯特
 //逐像素
-Shader "Custom/Base_Texture/Specular_HL_BP_Frag_BumpTexture"
+Shader "Custom/Base_Texture/Specular_HL_BP_Frag_T_BumpTexture"
 {
 	Properties
 	{
