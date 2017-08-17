@@ -10,7 +10,8 @@ public class Mirror : MonoBehaviour
     private int m_OldReflectionTextureSize;
     public int textureSize = 256;
     public bool disablePixelLights = true;
-    public float clipPlaneOffset = 0.07f;
+    //public float clipPlaneOffset = 0.07f;
+    public float clipPlaneOffset = 0f;
     public LayerMask reflectLayers = -1;
 	void Start ()
     {
