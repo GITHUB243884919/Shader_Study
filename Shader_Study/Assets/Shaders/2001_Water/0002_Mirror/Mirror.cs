@@ -25,7 +25,6 @@ public class Mirror : MonoBehaviour
     public void OnWillRenderObject()
     {
         Camera cam = Camera.current;
-        //Camera cam = Camera.main;
         if (!cam)
         {
             return;
