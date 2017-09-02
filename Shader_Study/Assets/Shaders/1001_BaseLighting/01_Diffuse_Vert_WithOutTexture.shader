@@ -1,5 +1,5 @@
 ﻿//Lambert模型
-//逐顶点
+//逐顶点TEST
 Shader "Custom/Base_Lighting/Diffuse/Diffuse_Vert_WithOutTexture"
 {
 	Properties
